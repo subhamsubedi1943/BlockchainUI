@@ -1,0 +1,47 @@
+1.Compile the contract:
+truffle compile
+
+2.Deploy to Ganache:
+truffle migrate --network development
+
+3.Run the tests using the Truffle test command:
+truffle test
+
+4.Or to run only this specific test file:
+truffle test ./test/medicineSupplyChain.test.jsProject  
+
+5.Open Truffle console:
+truffle console --network development
+
+
+6.Use Truffle Console for Testing
+We can use the Truffle console to interact with your contract directly:
+
+// Get contract instance
+let instance = await MedicineSupplyChain.deployed()
+
+// Get accounts
+let accounts = await web3.eth.getAccounts()
+
+// Add a medicine (from manufacturer account)
+let manufacturingDate = Math.floor(new Date('2025-01-01').getTime() / 1000)
+let expiryDate = Math.floor(new Date('2027-01-01').getTime() / 1000)
+await instance.addMedicine("Paracetamol", "Acetaminophen 500mg", manufacturingDate, expiryDate, {from: accounts[0]})
+
+// Check medicine counter
+let count = await instance.medicineCounter()
+count.toString()
+
+// Get medicine details
+let details = await instance.getMedicineDetails(1)
+details
+
+// Sell to retailer
+await instance.sellMedicineToRetailer(1, accounts[1], {from: accounts[0]})
+
+// Sell to buyer
+await instance.sellMedicineToBuyer(1, accounts[2], {from: accounts[1]})
+
+// Check if medicine is expired
+let isExpired = await instance.isMedicineExpired(1)
+isExpired
